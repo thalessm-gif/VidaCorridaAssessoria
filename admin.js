@@ -34,6 +34,18 @@
     collectiveMinimumParticipants: document.getElementById("admin-collective-minimum"),
     collectiveStatusMode: document.getElementById("admin-collective-status-mode"),
     collectiveStatusReason: document.getElementById("admin-collective-status-reason"),
+    collectiveSecondaryEnabled: document.getElementById("admin-collective-secondary-enabled"),
+    collectiveSecondaryId: document.getElementById("admin-collective-secondary-id"),
+    collectiveSecondaryTitle: document.getElementById("admin-collective-secondary-title"),
+    collectiveSecondaryDescription: document.getElementById("admin-collective-secondary-description"),
+    collectiveSecondaryStartDate: document.getElementById("admin-collective-secondary-start-date"),
+    collectiveSecondaryStartTime: document.getElementById("admin-collective-secondary-start-time"),
+    collectiveSecondaryDeadlineDate: document.getElementById("admin-collective-secondary-deadline-date"),
+    collectiveSecondaryDeadlineTime: document.getElementById("admin-collective-secondary-deadline-time"),
+    collectiveSecondaryLocation: document.getElementById("admin-collective-secondary-location"),
+    collectiveSecondaryMinimumParticipants: document.getElementById("admin-collective-secondary-minimum"),
+    collectiveSecondaryStatusMode: document.getElementById("admin-collective-secondary-status-mode"),
+    collectiveSecondaryStatusReason: document.getElementById("admin-collective-secondary-status-reason"),
     guideStravaGroupUrl: document.getElementById("admin-guide-strava"),
     guideHandbookUrl: document.getElementById("admin-guide-handbook"),
     guideFeedbackUrl: document.getElementById("admin-guide-feedback")
@@ -211,6 +223,8 @@
     const kit = config.kitWithdrawal || {};
     const collective = config.collectiveTraining || {};
     const session = collective.session || {};
+    const collectiveSecondary = config.collectiveTrainingSecondary || {};
+    const secondarySession = collectiveSecondary.session || {};
     const guide = config.athleteGuide || {};
 
     fields.kitLocked.checked = kit.locked === true;
@@ -218,16 +232,8 @@
     fields.kitEventName.value = kit.eventName || "";
     fields.kitPickupTip.value = kit.pickupTip || "";
 
-    fields.collectiveEnabled.checked = collective.enabled === true;
-    fields.collectiveId.value = session.id || "";
-    fields.collectiveTitle.value = session.title || "";
-    fields.collectiveDescription.value = session.description || "";
-    fillDateTimeFields(session.startsAtIso, fields.collectiveStartDate, fields.collectiveStartTime);
-    fillDateTimeFields(session.decisionDeadlineIso, fields.collectiveDeadlineDate, fields.collectiveDeadlineTime);
-    fields.collectiveLocation.value = session.location || "";
-    fields.collectiveMinimumParticipants.value = session.minimumParticipants || 5;
-    fields.collectiveStatusMode.value = session.statusMode === "cancelled" ? "cancelled" : "automatic";
-    fields.collectiveStatusReason.value = session.statusReason || "";
+    fillCollectiveFields("primary", collective, session);
+    fillCollectiveFields("secondary", collectiveSecondary, secondarySession);
 
     fields.guideStravaGroupUrl.value = guide.stravaGroupUrl || "";
     fields.guideHandbookUrl.value = guide.handbookUrl || "";
@@ -235,8 +241,6 @@
   }
 
   function readForm() {
-    const startsAtIso = toAdminIsoDateTime(fields.collectiveStartDate, fields.collectiveStartTime);
-
     return {
       kitWithdrawal: {
         locked: fields.kitLocked.checked,
@@ -244,20 +248,8 @@
         eventName: getFieldValue(fields.kitEventName),
         pickupTip: getFieldValue(fields.kitPickupTip)
       },
-      collectiveTraining: {
-        enabled: fields.collectiveEnabled.checked,
-        session: {
-          id: getFieldValue(fields.collectiveId) || buildCollectiveSessionId(startsAtIso),
-          title: getFieldValue(fields.collectiveTitle),
-          description: getFieldValue(fields.collectiveDescription),
-          startsAtIso,
-          decisionDeadlineIso: toAdminIsoDateTime(fields.collectiveDeadlineDate, fields.collectiveDeadlineTime),
-          location: getFieldValue(fields.collectiveLocation),
-          minimumParticipants: Number(fields.collectiveMinimumParticipants.value || 5),
-          statusMode: getFieldValue(fields.collectiveStatusMode) === "cancelled" ? "cancelled" : "automatic",
-          statusReason: getFieldValue(fields.collectiveStatusReason)
-        }
-      },
+      collectiveTraining: readCollectiveConfig("primary"),
+      collectiveTrainingSecondary: readCollectiveConfig("secondary"),
       athleteGuide: {
         stravaGroupUrl: getFieldValue(fields.guideStravaGroupUrl),
         handbookUrl: getFieldValue(fields.guideHandbookUrl),
@@ -276,6 +268,81 @@
     }
 
     return `treino-coletivo-${normalizedDate.slice(0, 4)}-${normalizedDate.slice(4, 6)}-${normalizedDate.slice(6, 8)}-${normalizedDate.slice(8, 12)}`;
+  }
+
+  function buildSecondaryCollectiveSessionId(startsAtIso) {
+    const normalizedDate = String(startsAtIso || "")
+      .replace(/[^0-9]/g, "")
+      .slice(0, 12);
+
+    if (!normalizedDate) {
+      return "";
+    }
+
+    return `treino-coletivo-extra-${normalizedDate.slice(0, 4)}-${normalizedDate.slice(4, 6)}-${normalizedDate.slice(6, 8)}-${normalizedDate.slice(8, 12)}`;
+  }
+
+  function fillCollectiveFields(mode, collectiveConfig, session) {
+    const isSecondary = mode === "secondary";
+    const enabledField = isSecondary ? fields.collectiveSecondaryEnabled : fields.collectiveEnabled;
+    const idField = isSecondary ? fields.collectiveSecondaryId : fields.collectiveId;
+    const titleField = isSecondary ? fields.collectiveSecondaryTitle : fields.collectiveTitle;
+    const descriptionField = isSecondary ? fields.collectiveSecondaryDescription : fields.collectiveDescription;
+    const startDateField = isSecondary ? fields.collectiveSecondaryStartDate : fields.collectiveStartDate;
+    const startTimeField = isSecondary ? fields.collectiveSecondaryStartTime : fields.collectiveStartTime;
+    const deadlineDateField = isSecondary ? fields.collectiveSecondaryDeadlineDate : fields.collectiveDeadlineDate;
+    const deadlineTimeField = isSecondary ? fields.collectiveSecondaryDeadlineTime : fields.collectiveDeadlineTime;
+    const locationField = isSecondary ? fields.collectiveSecondaryLocation : fields.collectiveLocation;
+    const minimumField = isSecondary ? fields.collectiveSecondaryMinimumParticipants : fields.collectiveMinimumParticipants;
+    const statusModeField = isSecondary ? fields.collectiveSecondaryStatusMode : fields.collectiveStatusMode;
+    const statusReasonField = isSecondary ? fields.collectiveSecondaryStatusReason : fields.collectiveStatusReason;
+
+    enabledField.checked = collectiveConfig.enabled === true;
+    idField.value = session.id || "";
+    titleField.value = session.title || "";
+    descriptionField.value = session.description || "";
+    fillDateTimeFields(session.startsAtIso, startDateField, startTimeField);
+    fillDateTimeFields(session.decisionDeadlineIso, deadlineDateField, deadlineTimeField);
+    locationField.value = session.location || "";
+    minimumField.value = session.minimumParticipants || 5;
+    statusModeField.value = session.statusMode === "cancelled" ? "cancelled" : "automatic";
+    statusReasonField.value = session.statusReason || "";
+  }
+
+  function readCollectiveConfig(mode) {
+    const isSecondary = mode === "secondary";
+    const startDateField = isSecondary ? fields.collectiveSecondaryStartDate : fields.collectiveStartDate;
+    const startTimeField = isSecondary ? fields.collectiveSecondaryStartTime : fields.collectiveStartTime;
+    const deadlineDateField = isSecondary ? fields.collectiveSecondaryDeadlineDate : fields.collectiveDeadlineDate;
+    const deadlineTimeField = isSecondary ? fields.collectiveSecondaryDeadlineTime : fields.collectiveDeadlineTime;
+    const startsAtIso = toAdminIsoDateTime(startDateField, startTimeField);
+    const idField = isSecondary ? fields.collectiveSecondaryId : fields.collectiveId;
+    const titleField = isSecondary ? fields.collectiveSecondaryTitle : fields.collectiveTitle;
+    const descriptionField = isSecondary ? fields.collectiveSecondaryDescription : fields.collectiveDescription;
+    const locationField = isSecondary ? fields.collectiveSecondaryLocation : fields.collectiveLocation;
+    const minimumField = isSecondary ? fields.collectiveSecondaryMinimumParticipants : fields.collectiveMinimumParticipants;
+    const statusModeField = isSecondary ? fields.collectiveSecondaryStatusMode : fields.collectiveStatusMode;
+    const statusReasonField = isSecondary ? fields.collectiveSecondaryStatusReason : fields.collectiveStatusReason;
+    const enabledField = isSecondary ? fields.collectiveSecondaryEnabled : fields.collectiveEnabled;
+
+    return {
+      enabled: enabledField.checked,
+      session: {
+        id: getFieldValue(idField) || (
+          isSecondary
+            ? buildSecondaryCollectiveSessionId(startsAtIso)
+            : buildCollectiveSessionId(startsAtIso)
+        ),
+        title: getFieldValue(titleField),
+        description: getFieldValue(descriptionField),
+        startsAtIso,
+        decisionDeadlineIso: toAdminIsoDateTime(deadlineDateField, deadlineTimeField),
+        location: getFieldValue(locationField),
+        minimumParticipants: Number(minimumField.value || 5),
+        statusMode: getFieldValue(statusModeField) === "cancelled" ? "cancelled" : "automatic",
+        statusReason: getFieldValue(statusReasonField)
+      }
+    };
   }
 
   function fillDateTimeFields(isoValue, dateField, timeField) {

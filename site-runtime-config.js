@@ -71,6 +71,16 @@
         config.collectiveTrainingConfig
       );
     }
+
+    if (
+      isPlainObject(config.collectiveTrainingSecondaryConfig) &&
+      window.COLLECTIVE_TRAINING_RUNTIME_KEY === "collectiveTrainingSecondaryConfig"
+    ) {
+      window.COLLECTIVE_TRAINING_CONFIG = mergeConfig(
+        window.COLLECTIVE_TRAINING_CONFIG || {},
+        config.collectiveTrainingSecondaryConfig
+      );
+    }
   }
 
   try {

@@ -154,6 +154,76 @@
         <section class="panel admin-section">
           <div class="overview-header">
             <div>
+              <p class="eyebrow">Treino Coletivo 2</p>
+              <h2>Segundo evento, separado no Telegram</h2>
+            </div>
+          </div>
+
+          <label class="admin-toggle">
+            <input id="admin-collective-secondary-enabled" type="checkbox">
+            <span>Exibir treino coletivo 2 no site</span>
+          </label>
+
+          <div class="admin-grid">
+            <label class="field">
+              <span>ID da sessÃ£o</span>
+              <input id="admin-collective-secondary-id" type="text" placeholder="treino-coletivo-extra-AAAA-MM-DD-HHMM">
+            </label>
+
+            <label class="field">
+              <span>TÃ­tulo</span>
+              <input id="admin-collective-secondary-title" type="text">
+            </label>
+
+            <label class="field">
+              <span>Data e horÃ¡rio do treino</span>
+              <div class="admin-date-time-fields">
+                <input id="admin-collective-secondary-start-date" type="date" aria-label="Data do treino 2">
+                <input id="admin-collective-secondary-start-time" type="time" step="60" aria-label="HorÃ¡rio do treino 2">
+              </div>
+            </label>
+
+            <label class="field">
+              <span>Prazo de decisÃ£o</span>
+              <div class="admin-date-time-fields">
+                <input id="admin-collective-secondary-deadline-date" type="date" aria-label="Data do prazo de decisÃ£o do treino 2">
+                <input id="admin-collective-secondary-deadline-time" type="time" step="60" aria-label="HorÃ¡rio do prazo de decisÃ£o do treino 2">
+              </div>
+            </label>
+
+            <label class="field">
+              <span>Local</span>
+              <input id="admin-collective-secondary-location" type="text">
+            </label>
+
+            <label class="field">
+              <span>MÃ­nimo de atletas</span>
+              <input id="admin-collective-secondary-minimum" type="number" min="1" max="500" step="1">
+            </label>
+
+            <label class="field">
+              <span>Status do treino</span>
+              <select id="admin-collective-secondary-status-mode">
+                <option value="automatic">AutomÃ¡tico</option>
+                <option value="cancelled">Cancelado manualmente</option>
+              </select>
+            </label>
+          </div>
+
+          <label class="field">
+            <span>DescriÃ§Ã£o</span>
+            <textarea id="admin-collective-secondary-description" rows="3"></textarea>
+          </label>
+
+          <label class="field">
+            <span>Motivo do cancelamento</span>
+            <textarea id="admin-collective-secondary-status-reason" rows="2"></textarea>
+          </label>
+        </section>
+
+        <section class="panel admin-section">
+          <div class="overview-header">
+            <div>
               <p class="eyebrow">Guia do Atleta</p>
               <h2>Links úteis</h2>
             </div>
