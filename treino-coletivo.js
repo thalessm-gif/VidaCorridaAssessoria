@@ -394,6 +394,7 @@ async function loadCollectiveEntriesFromGoogleSheets(options = {}) {
     const sessionPayload = buildCollectiveSessionPayload();
     const queryParts = [
       `action=${encodeURIComponent(COLLECTIVE_LIST_ACTION)}`,
+      `resource=${encodeURIComponent(COLLECTIVE_RESOURCE)}`,
       `sessionId=${encodeURIComponent(getCollectiveSessionId())}`,
       `sessionTitle=${encodeURIComponent(sessionPayload.title || "")}`,
       `startsAtIso=${encodeURIComponent(sessionPayload.startsAtIso || "")}`,

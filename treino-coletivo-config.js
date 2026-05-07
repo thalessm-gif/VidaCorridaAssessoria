@@ -24,26 +24,26 @@ window.COLLECTIVE_TRAINING_CONFIG = {
 
     // Identificador unico da sessao.
     // Sugestao de formato: treino-coletivo-AAAA-MM-DD-HHMM
-    id: "treino-coletivo-2026-04-22-1830",
+    id: "treino-coletivo-2026-05-10-0600",
 
     // Titulo exibido na pagina e usado no resumo enviado ao Telegram.
-    title: "Coletivo de Quarta - Pancada",
+    title: "SIMULADO E TREINO COLETIVO VC",
 
     // Texto curto de apoio exibido abaixo do titulo da pagina.
-    description: "Treinar é bom, mas treinar em grupo é melhor ainda.",
+    description: "Chegou a hora de ajustarmos os últimos detalhes de ritmo e estratégia de suplementação.",
 
     // Data e horario do treino no formato ISO com fuso.
     // Exemplo: 2026-04-22T18:30:00-03:00
-    startsAtIso: "2026-04-22T18:30:00-03:00",
+    startsAtIso: "2026-05-10T06:00:00-03:00",
 
     // Prazo final para decidir se o treino vai acontecer.
     // Se nao atingir o minimo ate este horario, a pagina mostra treino cancelado.
-    decisionDeadlineIso: "2026-04-22T16:00:00-03:00",
+    decisionDeadlineIso: "2026-05-09T23:59:00-03:00",
 
     // Local que aparecera na pagina e na mensagem do Telegram.
-    location: "Orla da Henrique Pancada",
+    location: "Ciclovia Cassino - em frente ao CADU",
 
     // Quantidade minima de confirmacoes para o treino ser considerado confirmado.
-    minimumParticipants: 5
+    minimumParticipants: 15
   }
 };
